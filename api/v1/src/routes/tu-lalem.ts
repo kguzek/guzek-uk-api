@@ -1,14 +1,14 @@
 import express from "express";
 import { Op } from "sequelize";
-import { TuLalem } from "../sequelize";
+import { TuLalem } from "guzek-uk-common/sequelize";
 import {
   createDatabaseEntry,
   readAllDatabaseEntries,
   sendOK,
   sendError,
-} from "../util";
-import { getDistanceBetweenTwoPoints } from "../maths";
-import { CustomRequest, LatLngArr } from "../models";
+} from "guzek-uk-common/util";
+import { getDistanceBetweenTwoPoints } from "guzek-uk-common/maths";
+import { CustomRequest, LatLngArr } from "guzek-uk-common/models";
 export const router = express.Router();
 
 /** The minimum distance a point has to be apart from all other points on the map. */

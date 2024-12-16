@@ -13,9 +13,9 @@ const dotEnvPath = path.resolve(__dirname, ENV_FILE_PATH);
 dotenv.config({ path: dotEnvPath });
 const password = require("s-salt-pepper");
 
-import { sendError } from "./src/util";
-import getMiddleware from "./src/middleware";
-import { getLogger } from "./src/middleware/logging";
+import { sendError } from "guzek-uk-common/util";
+import { getMiddleware } from "guzek-uk-common/middleware";
+import { getLogger } from "guzek-uk-common/logger";
 
 const logger = getLogger(__filename);
 

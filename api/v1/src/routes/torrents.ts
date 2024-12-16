@@ -1,12 +1,12 @@
 import express from "express";
-import { getLogger } from "../middleware/logging";
-import { BasicEpisode } from "../models";
+import { getLogger } from "guzek-uk-common/logger";
+import { BasicEpisode } from "guzek-uk-common/models";
 import { Eztv } from "../torrentIndexers/eztv";
 import {
   SearchResult,
   TorrentIndexer,
 } from "../torrentIndexers/torrentIndexer";
-import { sendError, sendOK, validateNaturalNumber } from "../util";
+import { sendError, sendOK, validateNaturalNumber } from "guzek-uk-common/util";
 
 export const router = express.Router();
 const indexer: TorrentIndexer = new Eztv();

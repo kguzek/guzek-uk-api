@@ -1,12 +1,12 @@
 import axios, { AxiosError } from "axios";
-import { getLogger } from "./middleware/logging";
+import { getLogger } from "guzek-uk-common/logger";
 import {
   TorrentInfo,
   TORRENT_DOWNLOAD_PATH,
   BasicEpisode,
   ConvertedTorrentInfo,
-} from "./models";
-import { convertTorrentInfo } from "./util";
+} from "guzek-uk-common/models";
+import { convertTorrentInfo } from "guzek-uk-common/util";
 
 const API_URL = "https://transmission.guzek.uk/transmission/rpc";
 const SESSION_ID_HEADER_NAME = "X-Transmission-Session-Id";

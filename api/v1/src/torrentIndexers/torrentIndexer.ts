@@ -2,10 +2,10 @@
 
 import axios from "axios";
 import parse, { HTMLElement, Node } from "node-html-parser";
-import { getLogger } from "../middleware/logging";
-import { BasicEpisode } from "../models";
-import { sanitiseShowName } from "../sequelize";
-import { serialiseEpisode } from "../util";
+import { getLogger } from "guzek-uk-common/logger";
+import { BasicEpisode } from "guzek-uk-common/models";
+import { sanitiseShowName } from "guzek-uk-common/sequelize";
+import { serialiseEpisode } from "guzek-uk-common/util";
 
 const logger = getLogger(__filename);
 

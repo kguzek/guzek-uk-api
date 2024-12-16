@@ -1,6 +1,6 @@
 import express, { Request, Response } from "express";
-import { getLogger } from "../middleware/logging";
-import { Page, PageContent } from "../sequelize";
+import { getLogger } from "guzek-uk-common/logger";
+import { Page, PageContent } from "guzek-uk-common/sequelize";
 import {
   createDatabaseEntry,
   deleteDatabaseEntry,
@@ -8,7 +8,7 @@ import {
   sendError,
   sendOK,
   updateDatabaseEntry,
-} from "../util";
+} from "guzek-uk-common/util";
 
 export const router = express.Router();
 

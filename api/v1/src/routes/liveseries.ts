@@ -2,14 +2,14 @@ import express, { Request, Response } from "express";
 import expressWs from "express-ws";
 import { ObjectEncodingOptions, promises as fs } from "fs";
 import { CronJob } from "cron";
-import { getLogger } from "../middleware/logging";
+import { getLogger } from "guzek-uk-common/logger";
 import {
   UserShows,
   User,
   WatchedEpisodes,
   DownloadedEpisode,
   sanitiseShowName,
-} from "../sequelize";
+} from "guzek-uk-common/sequelize";
 import axios from "axios";
 import {
   createDatabaseEntry,
@@ -27,7 +27,7 @@ import {
   getStatusText,
   logResponse,
   setCacheControl,
-} from "../util";
+} from "guzek-uk-common/util";
 import {
   WatchedShowData,
   Episode,
@@ -39,7 +39,7 @@ import {
   STATIC_CACHE_DURATION_MINS,
   ConvertedTorrentInfo,
   CustomRequest,
-} from "../models";
+} from "guzek-uk-common/models";
 import { TorrentClient } from "../torrentClient";
 import {
   downloadSubtitles,

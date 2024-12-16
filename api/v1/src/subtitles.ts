@@ -1,9 +1,9 @@
 import fs from "fs/promises";
 import axios, { AxiosError, AxiosInstance, AxiosResponse } from "axios";
 import { createWriteStream, fsync } from "fs";
-import { getLogger } from "./middleware/logging";
-import { BasicEpisode, TorrentInfo } from "./models";
-import { serialiseEpisode } from "./util";
+import { getLogger } from "guzek-uk-common/logger";
+import { BasicEpisode, TorrentInfo } from "guzek-uk-common/models";
+import { serialiseEpisode } from "guzek-uk-common/util";
 
 const SUBTITLES_API_URL = "https://api.opensubtitles.com/api/v1";
 export const SUBTITLES_DEFAULT_LANGUAGE = "en";

@@ -10,11 +10,16 @@ import {
   deleteDatabaseEntry,
   sendError,
   sendOK,
-} from "../util";
-import { UserShows, Token, User, WatchedEpisodes } from "../sequelize";
-import { getTokenSecret } from "../middleware/auth";
-import { CustomRequest, UserObj } from "../models";
-import { getLogger } from "../middleware/logging";
+} from "guzek-uk-common/util";
+import {
+  UserShows,
+  Token,
+  User,
+  WatchedEpisodes,
+} from "guzek-uk-common/sequelize";
+import { getTokenSecret } from "guzek-uk-common/util";
+import { CustomRequest, UserObj } from "guzek-uk-common/models";
+import { getLogger } from "guzek-uk-common/logger";
 const password = require("s-salt-pepper");
 
 export const router = express.Router();
