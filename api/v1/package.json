@@ -2,7 +2,7 @@
   "name": "guzek-uk-api",
   "version": "2.0.0",
   "engines": {
-    "node": "^18.4.0"
+    "node": "^22.12.0"
   },
   "author": "Konrad Guzek",
   "license": "ISC",
@@ -64,6 +64,5 @@
     "@types/sequelize": "^4.28.13",
     "@types/uuid": "^8.3.4",
     "nodemon": "^2.0.16"
-  },
-  "packageManager": "yarn@3.2.1"
+  }
 }

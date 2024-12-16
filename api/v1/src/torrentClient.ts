@@ -1,6 +1,11 @@
 import axios, { AxiosError } from "axios";
 import { getLogger } from "./middleware/logging";
-import { TorrentInfo, TORRENT_DOWNLOAD_PATH, BasicEpisode } from "./models";
+import {
+  TorrentInfo,
+  TORRENT_DOWNLOAD_PATH,
+  BasicEpisode,
+  ConvertedTorrentInfo,
+} from "./models";
 import { convertTorrentInfo } from "./util";
 
 const API_URL = "https://transmission.guzek.uk/transmission/rpc";
@@ -43,8 +48,6 @@ type TorrentResponse<T extends Method> = T extends "session-get"
   : { arguments: Record<string, any> };
 
 type ExemptMethod = "session-get" | "session-stats";
-
-export type ConvertedTorrentInfo = ReturnType<typeof convertTorrentInfo>;
 
 export class TorrentClient {
   auth?: { username: string; password: string };

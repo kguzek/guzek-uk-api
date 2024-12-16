@@ -1,6 +1,6 @@
 import { Request } from "express";
 import { Page, PageContent, Token, TuLalem, User } from "./sequelize";
-import { ConvertedTorrentInfo } from "./torrentClient";
+import { convertTorrentInfo } from "./util";
 
 export type RequestMethod = "GET" | "PUT" | "POST" | "DELETE" | "PATCH";
 
@@ -103,6 +103,8 @@ export const TORRENT_STATUSES = [
   "Unknown status 5",
   "Idle/Seeding",
 ];
+
+export type ConvertedTorrentInfo = ReturnType<typeof convertTorrentInfo>;
 
 export type BasicEpisode = Pick<
   ConvertedTorrentInfo,

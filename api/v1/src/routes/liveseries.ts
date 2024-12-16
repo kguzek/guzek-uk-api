@@ -37,9 +37,10 @@ import {
   TorrentInfo,
   BasicEpisode,
   STATIC_CACHE_DURATION_MINS,
+  ConvertedTorrentInfo,
   CustomRequest,
 } from "../models";
-import { TorrentClient, ConvertedTorrentInfo } from "../torrentClient";
+import { TorrentClient } from "../torrentClient";
 import {
   downloadSubtitles,
   getSubtitleClient,
