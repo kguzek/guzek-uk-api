@@ -1,25 +1,34 @@
-# The Guzek UK website
+# The Guzek UK API
 
 ## Intro
 
-This repository contains the source code for [Guzek UK](https://www.guzek.uk/), which is the personal portfolio website of Konrad Guzek.
-It serves as a showcase of projects as well as the homepage of [LiveSeries](https://www.guzek.uk/liveseries).
-
-## Pages
-
-The page contains standard portfolio website features, such as brief "about me" on the homepage as well as a "projects" page outlining some of the more recent apps I've been working on. The most interesting feature of the website is the "LiveSeries" page, which is explained in the next section.
-
-## LiveSeries
-
-LiveSeries started out as a personal project back in 2019 in the form of a C console app. In 2020, I restarted the project as LiveSeries 2 in C# using WinForms and the .NET framework. I ended up creating a fully-functional Windows desktop application, which automatically downloaded new releases of TV shows I watched. It had no "client" and "server" side, as it was all one application, just merged together in a single app. However, after starting Guzek UK, I had the idea of migrating LiveSeries 2 to the web in order to allow cross-client use, and using a centralised server to host and save TV shows and other data. In 2024, I started work on LiveSeries Web, now known as [LiveSeries](https://www.guzek.uk/liveseries), and subsequently renamed LiveSeries 2 (the C# app) to LiveSeries Legacy. The repository is currently [archived but still publicly available](https://github.com/kguzek/LiveSeriesLegacy/) here on GitHub.
-
-LiveSeries is now considered a finished product; I personally use it and it satisfies my needs. However, the limitations of a centralised server are now becoming apparent: in order to allow other users to download content, they would need unrestricted access to my own personal server, which is not fesible as the storage space doesn't allow it. This is why the episode downloading functionality is currently limited to whitelisted accounts, but I will be looking into allowing public access in some form (e.g. a local server download to be able to set up decentralised servers, while still allowing the web client interface to access it).
+This repository contains the source code for the [Guzek UK API](https://api.guzek.uk/), which is used to power the [Guzek UK Website](https://www.guzek.uk/) -- my personal homepage. It has general website-related routes, such as page content for my custom-made content management system, the entire backend of [LiveSeries](https://www.guzek.uk/liveseries), a public torrent indexer and scraper, and much more.
 
 ## API
 
-The website features a back-end hosted on [api.guzek.uk](https://api.guzek.uk/), with JWT authentication and custom authorisation middleware. It provides user registration, website content editing, user profile and detail editing, and of course the LiveSeries API.
+This repository contains only the necessary lightweight public-facing APIs. It used to contain user authentication, but that has been moved to a [separate server](https://github.com/kguzek/guzek-uk-auth-server).
 
-Fun fact: its first implementation was as a JSON file serving as the database, and raw Node.JS http server code. It's now a MySQL (specifically mariadb) database operated by [Sequelize](https://sequelize.org/), an ORM for JS/TS -- yes, it's still based on Node.JS.
+Fun fact: this API's first implementation was as a JSON file serving as the database, and raw Node.JS http server code. It's now a MariaDB database operated by [Sequelize](https://sequelize.org/), an ORM for JS/TS -- yes, it's still based on Node.JS.
+
+## Routes
+
+Below is a list of accessible API routes, which use a base of [https://api.guzek.uk](https://api.guzek.uk/) (*).
+
+\* The `liveseries/watch` route is planned to be moved to a separate streaming server, `v.guzek.uk`. Currently, that hostname resolves to the same server as `api.guzek.uk`.
+
+TODO: implement routes documentation
+
+### `/pages`
+
+### `/updated`
+
+### `/logs`
+
+### `/torrents`
+
+### `/liveseries`
+
+### `/tu-lalem`
 
 ## Usage
 

@@ -5,7 +5,7 @@
     "node": "^22.12.0"
   },
   "author": "Konrad Guzek",
-  "license": "ISC",
+  "license": "AGPL-3.0-only",
   "description": "The API for the \"guzek.uk\" website.",
   "private": true,
   "main": "index.ts",
