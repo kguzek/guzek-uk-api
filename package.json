@@ -1,6 +1,7 @@
 {
   "name": "guzek-uk-api",
-  "version": "2.0.0",
+  "homepage": "https://api.guzek.uk/",
+  "version": "3.0.0",
   "engines": {
     "node": "^22.12.0"
   },
