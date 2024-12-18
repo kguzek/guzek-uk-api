@@ -71,7 +71,7 @@ router
       },
       userUUID: req.user?.uuid,
     };
-    await createDatabaseEntry(TuLalem, req, res, modelParams);
+    await createDatabaseEntry(TuLalem, modelParams, res);
   })
 
   // GET all coordinates

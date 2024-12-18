@@ -15,7 +15,7 @@ import {
   createDatabaseEntry,
   deleteDatabaseEntry,
   readAllDatabaseEntries,
-  readDatabaseEntry,
+  queryDatabase,
   sendError,
   sendOK,
   updateDatabaseEntry,
@@ -203,10 +203,8 @@ async function modifyUserShows(
   if (likedShows == null || subscribedShows == null) {
     const success = await createDatabaseEntry(
       UserShows,
-      req,
-      res,
       { userUUID, likedShows: [], subscribedShows: [] },
-      () => {}
+      res
     );
     if (!success) return;
   }
@@ -262,11 +260,10 @@ router.get("/watched-episodes", (_req, res) =>
 
 // GET own watched episodes
 router.get("/watched-episodes/personal", async (req: CustomRequest, res) => {
-  const watchedEpisodes = await readDatabaseEntry(
+  const watchedEpisodes = await queryDatabase(
     WatchedEpisodes,
+    { where: { userUUID: req.user?.uuid } },
     res,
-    { userUUID: req.user?.uuid },
-    undefined,
     true
   );
   if (!watchedEpisodes) return;
@@ -408,19 +405,22 @@ router.put(
     if (errorMessage) return sendError(res, 400, { message: errorMessage });
     if (!validateNaturalList(req.body, res)) return;
     const where = { userUUID: req.user?.uuid };
-    const storedModel = await readDatabaseEntry(
+    const storedModel = await queryDatabase(
       WatchedEpisodes,
+      { where },
       res,
-      where,
-      undefined,
       true
     );
     if (!storedModel) return;
     if (storedModel.length === 0) {
-      await createDatabaseEntry(WatchedEpisodes, req, res, {
-        ...where,
-        watchedEpisodes: { [showId]: { [season]: req.body } },
-      });
+      await createDatabaseEntry(
+        WatchedEpisodes,
+        {
+          ...where,
+          watchedEpisodes: { [showId]: { [season]: req.body } },
+        },
+        res
+      );
       return;
     }
     const storedData = storedModel[0].get("watchedEpisodes") as WatchedShowData;
