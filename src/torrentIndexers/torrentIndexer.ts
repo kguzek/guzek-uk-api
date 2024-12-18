@@ -147,7 +147,7 @@ export abstract class TorrentIndexer {
   /** Finds the top torrent result from the API, using `TorrentIndexer.selectTopResult`. */
   async findTopResult(episode: BasicEpisode) {
     const results = await this.search(episode);
-    if (!results) {
+    if (!results || results.length === 0) {
       logger.warn("No search results found.");
       return null;
     }

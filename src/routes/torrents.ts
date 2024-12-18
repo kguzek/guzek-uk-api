@@ -43,6 +43,11 @@ router.get("/:showName/:season/:episode", async (req, res) => {
     sendError(res, 500, { message: "Could not obtain torrent data." });
   }
   if (selectTopResult) {
+    if (results.length === 0) {
+      return sendError(res, 404, {
+        message: "No torrents found for this episode.",
+      });
+    }
     const topResult = indexer.selectTopResult(results);
     return sendOK(res, topResult);
   }
