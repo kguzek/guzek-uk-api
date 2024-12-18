@@ -1,6 +1,5 @@
 // Initialise dependencies
 import express from "express";
-import expressWs from "express-ws";
 import { setupEnvironment } from "guzek-uk-common/setup";
 setupEnvironment();
 import { startServer } from "guzek-uk-common/util";
@@ -10,8 +9,7 @@ import { getLogger } from "guzek-uk-common/logger";
 const logger = getLogger(__filename);
 
 // Initialise the application instance
-export const wsInstance = expressWs(express());
-const app = wsInstance.app;
+const app = express();
 app.set("trust proxy", 1);
 
 // Determine the server port
@@ -22,9 +20,9 @@ const ENDPOINTS = [
   "pages",
   "updated",
   "tu-lalem",
-  "liveseries",
+  "liveseries/shows",
+  "liveseries/watched-episodes",
   "logs",
-  "torrents",
 ];
 
 /** Initialises the HTTP RESTful API server. */
