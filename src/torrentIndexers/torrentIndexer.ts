@@ -74,6 +74,15 @@ export function getSizeValue(value: string) {
   return size * exponent;
 }
 
+const average = (values: number[]) =>
+  values.reduce((acc, val) => acc + val, 0) / values.length;
+
+const standardDeviation = (values: number[], mean: number) =>
+  Math.sqrt(average(values.map((val) => (val - mean) ** 2)));
+
+const zScore = (value: number, mean: number, sigma: number) =>
+  (value - mean) / sigma;
+
 export abstract class TorrentIndexer {
   abstract SERVICE_URL_BASE: string;
   COOKIE_HEADER: string = "";
@@ -120,16 +129,24 @@ export abstract class TorrentIndexer {
    *  `results`: A list of `SearchResult`s sorted by seeder count in descending order.
    */
   public selectTopResult(results: SearchResult[]) {
-    const topSevenResults = results.slice(0, 7);
-    const resultsByFilesize = topSevenResults.sort((a, b) => b.size - a.size);
-    const topResultByFilesize = resultsByFilesize[0];
-    if (topResultByFilesize.seeders > 0) return topResultByFilesize;
-    const topResultBySeeders = topSevenResults[0];
-    if (topResultBySeeders.seeders > 0) return topResultBySeeders;
-    logger.warn("All torrent search results have 0 seeders");
-    // Since all results have 0 seeders, return the one with the most leechers. Maybe they'll be peers
-    const resultsByLeechers = results.sort((a, b) => a.leechers - b.leechers);
-    return resultsByLeechers[0];
+    if (results.length === 0) {
+      logger.warn("Passed empty results list to `selectTopResult`");
+      return null;
+    }
+    if (results.every((result) => result.seeders === 0)) {
+      logger.warn("All torrent search results have 0 seeders");
+      // Since all results have 0 seeders, return the one with the most leechers. Maybe they'll be peers
+      const resultsByLeechers = results.sort((a, b) => a.leechers - b.leechers);
+      return resultsByLeechers[0];
+    }
+    const sizes = results.map((result) => result.size);
+    const mean = average(sizes);
+    const sigma = standardDeviation(sizes, mean);
+    const resultsWithoutOutliers = results.filter(
+      (result) => result.size < mean && zScore(result.size, mean, sigma) > -1
+    );
+    const topResult = resultsWithoutOutliers[0];
+    return topResult;
   }
 
   async search(episode: BasicEpisode) {
