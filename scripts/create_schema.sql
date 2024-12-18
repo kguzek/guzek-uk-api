@@ -58,10 +58,3 @@ CREATE TABLE `guzek_uk`.`watched_episodes` (
   `watched_episodes` JSON NOT NULL,
   FOREIGN KEY (`user_uuid`) REFERENCES `users`(`uuid`)
 );
-CREATE TABLE `guzek_uk`.`downloaded_episodes` (
-  `id` INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-  `show_id` INT NOT NULL,
-  `show_name` VARCHAR(32) NOT NULL,
-  `season` INT NOT NULL,
-  `episode` INT NOT NULL
-);
