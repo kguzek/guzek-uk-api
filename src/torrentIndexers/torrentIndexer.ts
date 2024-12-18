@@ -136,7 +136,7 @@ export abstract class TorrentIndexer {
     if (results.every((result) => result.seeders === 0)) {
       logger.warn("All torrent search results have 0 seeders");
       // Since all results have 0 seeders, return the one with the most leechers. Maybe they'll be peers
-      const resultsByLeechers = results.sort((a, b) => a.leechers - b.leechers);
+      const resultsByLeechers = results.sort((a, b) => b.leechers - a.leechers);
       return resultsByLeechers[0];
     }
     const sizes = results.map((result) => result.size);
