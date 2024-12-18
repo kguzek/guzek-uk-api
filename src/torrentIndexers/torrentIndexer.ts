@@ -125,8 +125,7 @@ export abstract class TorrentIndexer {
 
   /** Arbitrary algorithm to select the top torrent from a list of results.
    *
-   *  Arguments:
-   *  `results`: A list of `SearchResult`s sorted by seeder count in descending order.
+   *  @param results an unsorted array of `SearchResult`s.
    */
   public selectTopResult(results: SearchResult[]) {
     if (results.length === 0) {
@@ -142,7 +141,8 @@ export abstract class TorrentIndexer {
     const sizes = results.map((result) => result.size);
     const mean = average(sizes);
     const sigma = standardDeviation(sizes, mean);
-    const resultsWithoutOutliers = results.filter(
+    const resultsBySeeders = results.sort((a, b) => b.seeders - a.seeders);
+    const resultsWithoutOutliers = resultsBySeeders.filter(
       (result) => result.size < mean && zScore(result.size, mean, sigma) > -1
     );
     const topResult = resultsWithoutOutliers[0];
