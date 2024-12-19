@@ -15,7 +15,8 @@ const IGNORED_ENDPOINTS = [
 
 export function init(endpoints: string[]) {
   for (const endpoint of endpoints) {
-    if (IGNORED_ENDPOINTS.includes(endpoint)) continue;
+    if (IGNORED_ENDPOINTS.find((ignored) => endpoint.startsWith(ignored)))
+      continue;
     ENDPOINTS[endpoint] = 0;
   }
 }
