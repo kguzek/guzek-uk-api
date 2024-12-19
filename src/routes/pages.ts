@@ -111,8 +111,8 @@ router
       sendOK(
         res,
         pages.map((rawPage) => {
-          const { titleEN, titlePL, ...page } = rawPage.get();
-          return { ...page, title: lang === "EN" ? titleEN : titlePL };
+          const { titleEn, titlePl, ...page } = rawPage.get();
+          return { ...page, title: lang === "EN" ? titleEn : titlePl };
         })
       );
     })
