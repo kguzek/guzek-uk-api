@@ -15,13 +15,13 @@ export const router = express.Router();
 const logger = getLogger(__filename);
 
 enum CONTENT_LANGUAGES {
-  EN = "contentEN",
-  PL = "contentPL",
+  EN = "contentEn",
+  PL = "contentPl",
 }
 
 enum TITLE_LANGUAGES {
-  EN = "titleEN",
-  PL = "titlePL",
+  EN = "titleEn",
+  PL = "titlePl",
 }
 
 const send404 = (req: Request, res: Response) =>
@@ -124,6 +124,7 @@ router
     if (!pageContent) {
       return send404(req, res);
     }
+    console.log(pageContent);
     const lang = validateLangParameter(req, res);
     if (!lang) return;
     // const pages = await readDatabaseEntry(Page, res, { id: req.params.id });
