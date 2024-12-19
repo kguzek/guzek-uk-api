@@ -1,13 +1,13 @@
 {
   "name": "guzek-uk-api",
-  "homepage": "https://api.guzek.uk/",
   "version": "3.1.0",
+  "description": "The API for the \"guzek.uk\" website.",
+  "author": "Konrad Guzek",
+  "homepage": "https://api.guzek.uk/",
+  "license": "AGPL-3.0-only",
   "engines": {
     "node": "^22.12.0"
   },
-  "author": "Konrad Guzek",
-  "license": "AGPL-3.0-only",
-  "description": "The API for the \"guzek.uk\" website.",
   "private": true,
   "main": "index.ts",
   "scripts": {
@@ -15,6 +15,13 @@
     "start": "NODE_ENV=development NODE_PORT=5017 ts-node index.ts",
     "prod": "NODE_ENV=production NODE_PORT=5017 node --max-old-space-size=192 dist/index.js",
     "compile": "rm -r dist; tsc"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kguzek/guzek-uk-api.git"
+  },
+  "bugs": {
+    "url": "https://github.com/kguzek/guzek-uk-api/issues"
   },
   "resolutions": {
     "axios": "^0.28.0",

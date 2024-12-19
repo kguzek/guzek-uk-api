@@ -22,12 +22,12 @@ async function modifyUserShows(
   const showId = +req.params.showId;
   const errorMessage = validateNaturalNumber(showId);
   if (errorMessage) return sendError(res, 400, { message: errorMessage });
-  const userUUID = req.user?.uuid;
-  const { likedShows, subscribedShows } = await getUserShows(userUUID);
+  const userUuid = req.user?.uuid;
+  const { likedShows, subscribedShows } = await getUserShows(userUuid);
   if (likedShows == null || subscribedShows == null) {
     const success = await createDatabaseEntry(
       UserShows,
-      { userUUID, likedShows: [], subscribedShows: [] },
+      { userUuid, likedShows: [], subscribedShows: [] },
       res
     );
     if (!success) return;
@@ -51,15 +51,15 @@ async function modifyUserShows(
         ? [...collection, showId]
         : collection.filter((id) => id !== showId),
     },
-    { userUUID: req.user?.uuid }
+    { userUuid: req.user?.uuid }
   );
 }
 
 // GET all users' liked & subscribed TV shows
-router.get("/shows", (_req, res) => readAllDatabaseEntries(UserShows, res));
+router.get("/", (_req, res) => readAllDatabaseEntries(UserShows, res));
 
 // GET own liked & subscribed TV shows
-router.get("/shows/personal", async (req: CustomRequest, res) => {
+router.get("/personal", async (req: CustomRequest, res) => {
   const uuid = req.user?.uuid;
   const { likedShows, subscribedShows } = await getUserShows(uuid);
   sendOK(res, {
@@ -69,21 +69,21 @@ router.get("/shows/personal", async (req: CustomRequest, res) => {
 });
 
 // ADD liked TV show
-router.post("/shows/personal/liked/:showId", (req, res) =>
+router.post("/personal/liked/:showId", (req, res) =>
   modifyUserShows(req, res, true, true)
 );
 
 // DELETE liked TV show
-router.delete("/shows/personal/liked/:showId", (req, res) =>
+router.delete("/personal/liked/:showId", (req, res) =>
   modifyUserShows(req, res, false, true)
 );
 
 // ADD subscribed TV show
-router.post("/shows/personal/subscribed/:showId", (req, res) =>
+router.post("/personal/subscribed/:showId", (req, res) =>
   modifyUserShows(req, res, true, false)
 );
 
 // DELETE subscribed TV show
-router.delete("/shows/personal/subscribed/:showId", (req, res) =>
+router.delete("/personal/subscribed/:showId", (req, res) =>
   modifyUserShows(req, res, false, false)
 );

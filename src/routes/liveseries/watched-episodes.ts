@@ -16,15 +16,13 @@ import { WatchedShowData } from "guzek-uk-common/models";
 export const router = express.Router();
 
 // GET all users' watched episodes
-router.get("/watched-episodes", (_req, res) =>
-  readAllDatabaseEntries(WatchedEpisodes, res)
-);
+router.get("/", (_req, res) => readAllDatabaseEntries(WatchedEpisodes, res));
 
 // GET own watched episodes
-router.get("/watched-episodes/personal", async (req: CustomRequest, res) => {
+router.get("/personal", async (req: CustomRequest, res) => {
   const watchedEpisodes = await queryDatabase(
     WatchedEpisodes,
-    { where: { userUUID: req.user?.uuid } },
+    { where: { userUuid: req.user?.uuid } },
     res,
     true
   );
@@ -35,39 +33,36 @@ router.get("/watched-episodes/personal", async (req: CustomRequest, res) => {
 });
 
 // UPDATE own watched episodes
-router.put(
-  "/watched-episodes/personal/:showId/:season",
-  async (req: CustomRequest, res) => {
-    const showId = +req.params.showId;
-    const season = +req.params.season;
-    const errorMessage =
-      validateNaturalNumber(showId) ?? validateNaturalNumber(season);
-    if (errorMessage) return sendError(res, 400, { message: errorMessage });
-    if (!validateNaturalList(req.body, res)) return;
-    const where = { userUUID: req.user?.uuid };
-    const storedModel = await queryDatabase(
+router.put("/personal/:showId/:season", async (req: CustomRequest, res) => {
+  const showId = +req.params.showId;
+  const season = +req.params.season;
+  const errorMessage =
+    validateNaturalNumber(showId) ?? validateNaturalNumber(season);
+  if (errorMessage) return sendError(res, 400, { message: errorMessage });
+  if (!validateNaturalList(req.body, res)) return;
+  const where = { userUuid: req.user?.uuid };
+  const storedModel = await queryDatabase(
+    WatchedEpisodes,
+    { where },
+    res,
+    true
+  );
+  if (!storedModel) return;
+  if (storedModel.length === 0) {
+    await createDatabaseEntry(
       WatchedEpisodes,
-      { where },
-      res,
-      true
+      {
+        ...where,
+        watchedEpisodes: { [showId]: { [season]: req.body } },
+      },
+      res
     );
-    if (!storedModel) return;
-    if (storedModel.length === 0) {
-      await createDatabaseEntry(
-        WatchedEpisodes,
-        {
-          ...where,
-          watchedEpisodes: { [showId]: { [season]: req.body } },
-        },
-        res
-      );
-      return;
-    }
-    const storedData = storedModel[0].get("watchedEpisodes") as WatchedShowData;
-    const watchedEpisodes = {
-      ...storedData,
-      [showId]: { ...storedData[showId], [season]: req.body },
-    };
-    updateDatabaseEntry(WatchedEpisodes, req, res, { watchedEpisodes }, where);
+    return;
   }
-);
+  const storedData = storedModel[0].get("watchedEpisodes") as WatchedShowData;
+  const watchedEpisodes = {
+    ...storedData,
+    [showId]: { ...storedData[showId], [season]: req.body },
+  };
+  updateDatabaseEntry(WatchedEpisodes, req, res, { watchedEpisodes }, where);
+});

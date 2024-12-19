@@ -20,14 +20,14 @@ const MIN_WAIT_TIME_MS = 10 * 60 * 1000; // 10 minutes
 /** Ensures that the coordinates are not to close to any previous entries.
  *  Returns an error message or `null` if the coordinates are valid.
  */
-async function validateCoordinates(coords?: number[], userUUID?: string) {
+async function validateCoordinates(coords?: number[], userUuid?: string) {
   if (!coords) return "Coordinates not provided.";
   if (coords.length !== 2)
     return "Coordinates must have a latitude and longitude.";
-  if (!userUUID) return "User not logged in.";
+  if (!userUuid) return "User not logged in.";
 
   const entries = await TuLalem.findAll({
-    where: { userUUID },
+    where: { userUuid },
   });
   let cooldownMillis = 0;
   for (const entry of entries) {
@@ -69,15 +69,15 @@ router
         type: "Point",
         coordinates: [lng, lat],
       },
-      userUUID: req.user?.uuid,
+      userUuid: req.user?.uuid,
     };
     await createDatabaseEntry(TuLalem, modelParams, res);
   })
 
   // GET all coordinates
   .get("/", async (req, res) => {
-    const user = req.query.user;
-    if (!user) {
+    const userUuid = req.query.user;
+    if (!userUuid) {
       // GET coordinates of all users
       await readAllDatabaseEntries(TuLalem, res);
       return;
@@ -93,7 +93,7 @@ router
     try {
       result = await TuLalem.findOne({
         where: {
-          userUUID: user,
+          userUuid,
           timestamp: { [Op.gte]: fromTimestamp },
         },
         order: [["timestamp", "DESC"]],

@@ -26,6 +26,7 @@ CREATE TABLE `guzek_uk`.`users` (
   `hash` VARCHAR(255) NOT NULL,
   `salt` VARCHAR(45) NOT NULL,
   `admin` BOOLEAN NULL,
+  `server_url` VARCHAR(255) NULL,
   PRIMARY KEY (`uuid`)
 );
 CREATE TABLE `guzek_uk`.`tokens` (
