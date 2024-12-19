@@ -26,7 +26,9 @@ const processData = (data: Updated[]) => ({
   ...ENDPOINTS,
   ...Object.fromEntries(
     data.map((model) => [
-      (model.get("endpoint") as string).replace(/_/, "-"),
+      (model.get("endpoint") as string)
+        .replace(/_/, "-")
+        .replace("user-shows", "shows"),
       model.get("timestamp"),
     ])
   ),
