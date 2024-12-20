@@ -12,9 +12,6 @@ const logger = getLogger(__filename);
 const app = express();
 app.set("trust proxy", 1);
 
-// Determine the server port
-const PORT = process.env.NODE_PORT;
-
 // Define the endpoints
 const ENDPOINTS = [
   "pages",
