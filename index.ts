@@ -2,7 +2,7 @@
 import express from "express";
 import { setupEnvironment } from "guzek-uk-common/setup";
 setupEnvironment();
-import { startServer } from "guzek-uk-common/util";
+import { getServerPort, startServer } from "guzek-uk-common/util";
 import { getMiddleware } from "guzek-uk-common/middleware";
 import { getLogger } from "guzek-uk-common/logger";
 
@@ -27,6 +27,9 @@ const ENDPOINTS = [
 
 /** Initialises the HTTP RESTful API server. */
 async function initialise() {
+  const port = getServerPort();
+  if (!port) return;
+
   // Enable middleware
   app.use(getMiddleware());
 
@@ -36,11 +39,7 @@ async function initialise() {
     if (middleware.init) middleware.init(ENDPOINTS);
     app.use("/" + endpoint, middleware.router);
   }
-  startServer(app, PORT);
+  startServer(app, port);
 }
 
-if (PORT) {
-  initialise();
-} else {
-  logger.error("No server port environment variable set.");
-}
+initialise();
