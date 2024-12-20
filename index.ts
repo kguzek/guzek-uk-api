@@ -4,9 +4,6 @@ import { setupEnvironment } from "guzek-uk-common/setup";
 setupEnvironment();
 import { getServerPort, startServer } from "guzek-uk-common/util";
 import { getMiddleware } from "guzek-uk-common/middleware";
-import { getLogger } from "guzek-uk-common/logger";
-
-const logger = getLogger(__filename);
 
 // Initialise the application instance
 const app = express();
