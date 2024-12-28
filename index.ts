@@ -17,7 +17,6 @@ const ENDPOINTS = [
   "tu-lalem",
   "liveseries/shows",
   "liveseries/watched-episodes",
-  "logs",
 ];
 
 async function initialise() {
