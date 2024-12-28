@@ -59,13 +59,13 @@ Permissions: `admin only`
 
 Get all watched episode data stored in the database.
 
-#### GET `/liveseries/watched-episodes/personal`
+##### GET `/liveseries/watched-episodes/personal`
 
 Permissions: `authenticated only`
 
 Get all of the logged in user's watched episodes.
 
-##### PUT `/liveseries/watched-episodes/personal/{showId}/{season}`
+###### PUT `/liveseries/watched-episodes/personal/{showId}/{season}`
 
 Sets the logged in user's watched episodes in the given season of the given TV show, where the ID is the numerical ID from the [Episodate API](https://www.episodate.com/api).
 
