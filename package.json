@@ -14,7 +14,8 @@
     "dev": "NODE_ENV=development NODE_PORT=5017 nodemon --exec ts-node --files index.ts",
     "start": "NODE_ENV=development NODE_PORT=5017 ts-node index.ts",
     "prod": "NODE_ENV=production NODE_PORT=5017 node dist/index.js",
-    "compile": "rm -r dist; tsc"
+    "compile": "rm -r dist; tsc",
+    "up": "npm update guzek-uk-common"
   },
   "repository": {
     "type": "git",
