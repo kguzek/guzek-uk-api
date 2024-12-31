@@ -1,7 +1,7 @@
 // Initialise dependencies
 import express from "express";
 import { setupEnvironment } from "guzek-uk-common/setup";
-setupEnvironment();
+const debugMode = setupEnvironment();
 import { startServer } from "guzek-uk-common/server";
 import { getMiddleware } from "guzek-uk-common/middleware";
 import { send405 } from "guzek-uk-common/util";
@@ -21,7 +21,7 @@ const ENDPOINTS = [
 
 async function initialise() {
   // Enable middleware
-  app.use(getMiddleware());
+  app.use(getMiddleware(debugMode));
   for (const endpoint of ENDPOINTS) {
     const middleware = await import("./src/routes/" + endpoint);
     if (middleware.init) middleware.init(ENDPOINTS);
