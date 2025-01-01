@@ -1,4 +1,5 @@
-import express, { Request, Response } from "express";
+import express from "express";
+import type { Request, Response } from "express";
 import { getLogger } from "guzek-uk-common/logger";
 import { Page, PageContent } from "guzek-uk-common/sequelize";
 import {
