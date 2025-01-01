@@ -124,7 +124,6 @@ router
     if (!pageContent) {
       return send404(req, res);
     }
-    console.log(pageContent);
     const lang = validateLangParameter(req, res);
     if (!lang) return;
     // const pages = await readDatabaseEntry(Page, res, { id: req.params.id });
