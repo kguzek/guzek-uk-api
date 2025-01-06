@@ -54,7 +54,7 @@ async function modifyPageContent(
   updateExistingPage: boolean
 ) {
   const { content, ...attributes } = req.body;
-  const pageID = req.params.id;
+  const pageId = req.params.id;
 
   // Request validation
   const lang = validateLangParameter(req, res);
@@ -63,7 +63,7 @@ async function modifyPageContent(
   if (content) {
     const newValues = { [CONTENT_LANGUAGES[lang]]: content };
     // Determine if the entry has to be created or modified
-    const pageContent = await PageContent.findOne({ where: { pageID } });
+    const pageContent = await PageContent.findOne({ where: { pageId } });
     if (pageContent) {
       await pageContent.set(newValues).save();
     } else {
@@ -73,7 +73,7 @@ async function modifyPageContent(
             "Page content specified but 'shouldFetch' not set to 'true'.",
         });
       }
-      await PageContent.create({ ...newValues, pageID });
+      await PageContent.create({ ...newValues, pageId });
     }
   }
 
