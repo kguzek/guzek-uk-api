@@ -33,13 +33,13 @@ export async function getUserShows(userUuid?: string) {
 interface RefreshTokenResponse {
   accessToken: string;
   expiresAt: number;
-  uesr: UserObj;
+  user: UserObj;
 }
 
-async function getAdminToken() {
-  const refreshToken = process.env.ADMIN_REFRESH_TOKEN;
+async function getCronUserInfo() {
+  const refreshToken = process.env.CRON_USER_REFRESH_TOKEN;
   if (!refreshToken) {
-    logger.error("No admin refresh token environment variable set.");
+    logger.error("No CRON user refresh token environment variable set.");
     return null;
   }
   let res: AxiosResponse<RefreshTokenResponse>;
@@ -50,30 +50,35 @@ async function getAdminToken() {
   } catch (error) {
     if (axios.isAxiosError(error)) {
       logger.error(
-        `Could not obtain an admin access token. ${error.message}`,
+        `Could not obtain an access token for the CRON user. ${error.message}`,
         error.response?.data
       );
       return null;
     }
     logger.error(
-      "An error occured while obtaining an admin access token:",
+      "An error occured while obtaining an access token for the CRON user:",
       error
     );
     return null;
   }
   const expiresAt = new Date(res.data.expiresAt).toLocaleString();
-  logger.info(`Obtained admin access token with expiry date ${expiresAt}.`);
-  return res.data.accessToken;
+  logger.info(
+    `Obtained access token for CRON user with expiry date ${expiresAt}.`
+  );
+  return res.data;
 }
 
 async function checkUnwatchedEpisodes() {
-  const adminToken = await getAdminToken();
-  if (!adminToken) {
-    logger.error("Failed to get admin token. Aborting episodes check.");
+  const cronUser = await getCronUserInfo();
+  if (!cronUser) {
+    logger.error("Failed to get CRON user token. Aborting episodes check.");
     return;
   }
   const users = await User.findAll({
     where: {
+      uuid: {
+        [Op.not]: cronUser.user.uuid,
+      },
       serverUrl: {
         [Op.and]: {
           [Op.not]: null,
@@ -109,7 +114,9 @@ async function checkUnwatchedEpisodes() {
               continue;
             const url = `${serverUrl}liveseries/downloaded-episodes`;
             const serialised = serialiseEpisode(episode);
-            logger.info(`Attempting to download ${tvShow.name} ${serialised}`);
+            logger.info(
+              `Attempting to download ${tvShow.name} ${serialised}...`
+            );
             axios
               .post(
                 url,
@@ -121,7 +128,7 @@ async function checkUnwatchedEpisodes() {
                 },
                 {
                   headers: {
-                    Authorization: `Bearer ${adminToken}`,
+                    Authorization: `Bearer ${cronUser.accessToken}`,
                   },
                 }
               )
@@ -133,9 +140,16 @@ async function checkUnwatchedEpisodes() {
                   logger.error(`Failed to post to ${url}:`, error);
                   return;
                 }
+                if (error.status === 409) {
+                  logger.info(
+                    `This episode is already downloaded on the target server.`
+                  );
+                  return;
+                }
                 if (error.status === 403) {
-                  // User hasn't opted-in to this feature
-                  logger.warn(`Unauthorized to post to ${url}`);
+                  logger.warn(
+                    `The target server ${url} has denied access to the server.`
+                  );
                   return;
                 }
                 logger.error(
