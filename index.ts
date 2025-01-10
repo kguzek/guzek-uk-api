@@ -28,8 +28,9 @@ async function initialise() {
     if (middleware.init) middleware.init(ENDPOINTS);
     app.use(`/${endpoint}`, middleware.router, send405);
   }
-  initialiseEpisodeTracker();
-  startServer(app);
+  if (startServer(app)) {
+    initialiseEpisodeTracker();
+  }
 }
 
 initialise();
