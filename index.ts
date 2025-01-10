@@ -5,6 +5,7 @@ const debugMode = setupEnvironment();
 import { startServer } from "guzek-uk-common/server";
 import { getMiddleware } from "guzek-uk-common/middleware";
 import { send405 } from "guzek-uk-common/util";
+import { initialiseEpisodeTracker } from "./src/liveseries";
 
 // Initialise the application instance
 const app = express();
@@ -27,7 +28,7 @@ async function initialise() {
     if (middleware.init) middleware.init(ENDPOINTS);
     app.use(`/${endpoint}`, middleware.router, send405);
   }
-
+  initialiseEpisodeTracker();
   startServer(app);
 }
 
