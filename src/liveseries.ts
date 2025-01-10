@@ -62,7 +62,7 @@ async function getCronUserInfo() {
     return null;
   }
   const expiresAt = new Date(res.data.expiresAt).toLocaleString();
-  logger.info(
+  logger.verbose(
     `Obtained access token for CRON user with expiry date ${expiresAt}.`
   );
   return res.data;
