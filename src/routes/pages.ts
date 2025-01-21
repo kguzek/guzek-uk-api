@@ -1,15 +1,14 @@
 import express from "express";
 import type { Request, Response } from "express";
-import { getLogger } from "guzek-uk-common/logger";
-import { Page, PageContent } from "guzek-uk-common/sequelize";
+import { getLogger } from "guzek-uk-common/lib/logger";
+import { Page, PageContent } from "guzek-uk-common/lib/sequelize";
 import {
   createDatabaseEntry,
   deleteDatabaseEntry,
   readAllDatabaseEntries,
-  sendError,
-  sendOK,
   updateDatabaseEntry,
-} from "guzek-uk-common/util";
+} from "guzek-uk-common/lib/rest";
+import { sendError, sendOK } from "guzek-uk-common/lib/http";
 
 export const router = express.Router();
 

@@ -1,10 +1,9 @@
 // Initialise dependencies
 import express from "express";
-import { setupEnvironment } from "guzek-uk-common/setup";
+import { setupEnvironment } from "guzek-uk-common/lib/setup";
 const debugMode = setupEnvironment();
-import { startServer } from "guzek-uk-common/server";
+import { startServer, send405 } from "guzek-uk-common/lib/server";
 import { getMiddleware } from "guzek-uk-common/middleware";
-import { send405 } from "guzek-uk-common/util";
 import { initialiseEpisodeTracker } from "./src/liveseries";
 
 // Initialise the application instance

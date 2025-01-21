@@ -1,14 +1,13 @@
 import express, { Response } from "express";
-import { UserShows } from "guzek-uk-common/sequelize";
-import { CustomRequest } from "guzek-uk-common/models";
+import { UserShows } from "guzek-uk-common/lib/sequelize";
 import {
   createDatabaseEntry,
   readAllDatabaseEntries,
-  sendError,
-  sendOK,
   updateDatabaseEntry,
-  validateNaturalNumber,
-} from "guzek-uk-common/util";
+} from "guzek-uk-common/lib/rest";
+import { sendError, sendOK } from "guzek-uk-common/lib/http";
+import { validateNaturalNumber } from "guzek-uk-common/lib/util";
+import type { CustomRequest } from "guzek-uk-common/models";
 import { getUserShows } from "../../liveseries";
 
 export const router = express.Router();

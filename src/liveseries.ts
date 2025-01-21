@@ -1,11 +1,15 @@
 import express from "express";
 import { Op } from "sequelize";
-import { getLogger } from "guzek-uk-common/logger";
-import { User, UserShows, WatchedEpisodes } from "guzek-uk-common/sequelize";
-import type { Episode, TvShow, UserObj } from "guzek-uk-common/models";
 import { CronJob } from "cron";
 import axios, { AxiosResponse } from "axios";
-import { serialiseEpisode } from "guzek-uk-common/util";
+import { getLogger } from "guzek-uk-common/lib/logger";
+import {
+  User,
+  UserShows,
+  WatchedEpisodes,
+} from "guzek-uk-common/lib/sequelize";
+import type { Episode, TvShow, UserObj } from "guzek-uk-common/models";
+import { serialiseEpisode } from "guzek-uk-common/lib/util";
 
 export const router = express.Router();
 

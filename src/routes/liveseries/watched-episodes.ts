@@ -1,17 +1,17 @@
 import express from "express";
-import { WatchedEpisodes } from "guzek-uk-common/sequelize";
-import { CustomRequest } from "guzek-uk-common/models";
+import { WatchedEpisodes } from "guzek-uk-common/lib/sequelize";
 import {
   createDatabaseEntry,
   queryDatabase,
   readAllDatabaseEntries,
-  sendError,
-  sendOK,
   updateDatabaseEntry,
+} from "guzek-uk-common/lib/rest";
+import { sendError, sendOK } from "guzek-uk-common/lib/http";
+import {
   validateNaturalList,
   validateNaturalNumber,
-} from "guzek-uk-common/util";
-import { WatchedShowData } from "guzek-uk-common/models";
+} from "guzek-uk-common/lib/util";
+import type { CustomRequest, WatchedShowData } from "guzek-uk-common/models";
 
 export const router = express.Router();
 

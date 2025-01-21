@@ -1,14 +1,13 @@
 import express from "express";
 import { Op } from "sequelize";
-import { TuLalem } from "guzek-uk-common/sequelize";
+import { TuLalem } from "guzek-uk-common/lib/sequelize";
 import {
   createDatabaseEntry,
   readAllDatabaseEntries,
-  sendOK,
-  sendError,
-} from "guzek-uk-common/util";
-import { getDistanceBetweenTwoPoints } from "guzek-uk-common/maths";
-import { CustomRequest, LatLngArr } from "guzek-uk-common/models";
+} from "guzek-uk-common/lib/rest";
+import { sendError, sendOK } from "guzek-uk-common/lib/http";
+import { getDistanceBetweenTwoPoints } from "guzek-uk-common/lib/maths";
+import { CustomRequest, LatLngArray } from "guzek-uk-common/models";
 export const router = express.Router();
 
 /** The minimum distance a point has to be apart from all other points on the map. */
@@ -31,9 +30,9 @@ async function validateCoordinates(coords?: number[], userUuid?: string) {
   });
   let cooldownMillis = 0;
   for (const entry of entries) {
-    const testCoords = entry.get("coordinates") as LatLngArr;
+    const testCoords = entry.get("coordinates") as LatLngArray;
     const distance = getDistanceBetweenTwoPoints(
-      coords as LatLngArr,
+      coords as LatLngArray,
       testCoords
     );
     if (distance < MIN_POINT_DISTANCE_KM) {

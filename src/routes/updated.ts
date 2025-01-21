@@ -1,6 +1,8 @@
 import express from "express";
-import { Updated } from "guzek-uk-common/sequelize";
-import { readAllDatabaseEntries, sendOK } from "guzek-uk-common/util";
+import { Updated } from "guzek-uk-common/lib/sequelize";
+import { readAllDatabaseEntries } from "guzek-uk-common/lib/rest";
+import { sendOK } from "guzek-uk-common/lib/http";
+
 export const router = express.Router();
 
 const ENDPOINTS: { [endpoint: string]: number } = {};
