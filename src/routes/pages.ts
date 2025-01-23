@@ -29,16 +29,23 @@ const send404 = (req: Request, res: Response) =>
     message: `Could not find page with ID '${req.params.id}'.`,
   });
 
-/** Ensures the `lang` query parameter of the request is provided and a valid language option.
- *  If so, returns the parameter value. If not, sends a 400 response. and returns `undefined`. */
-function validateLangParameter(req: Request, res: Response) {
+/** Ensures the `lang` query parameter or cookie of the request is provided and a valid language option.
+ *  If so, returns the language enum value. If not, sends a 400 response and returns `null`. */
+function validateRequestLanguage(req: Request, res: Response) {
   const reject = (message: string) => void sendError(res, 400, { message });
-  if (!req.query.lang) {
-    return reject("No content language specified in request query.");
+  const rawLang = req.query.lang || req.cookies.lang;
+  if (!rawLang) {
+    reject("No content language specified in request query or cookies.");
+    return null;
   }
-  const lang = req.query.lang.toString().toUpperCase();
+  if (typeof rawLang !== "string") {
+    reject("Content language must be a string.");
+    return null;
+  }
+  const lang = rawLang.toUpperCase();
   if (!(lang in CONTENT_LANGUAGES)) {
-    return reject(`Invalid content language: '${req.query.lang}'.`);
+    reject(`Invalid content language: '${rawLang}'.`);
+    return null;
   }
   return lang as keyof typeof CONTENT_LANGUAGES;
 }
@@ -56,7 +63,7 @@ async function modifyPageContent(
   const pageId = req.params.id;
 
   // Request validation
-  const lang = validateLangParameter(req, res);
+  const lang = validateRequestLanguage(req, res);
   if (!lang) return;
 
   if (content) {
@@ -105,7 +112,7 @@ router
   // READ all pages
   .get("/", (req: Request, res: Response) =>
     readAllDatabaseEntries(Page, res, async (pages) => {
-      const lang = validateLangParameter(req, res);
+      const lang = validateRequestLanguage(req, res);
       if (!lang) return;
 
       sendOK(
@@ -124,7 +131,7 @@ router
     if (!pageContent) {
       return send404(req, res);
     }
-    const lang = validateLangParameter(req, res);
+    const lang = validateRequestLanguage(req, res);
     if (!lang) return;
     // const pages = await readDatabaseEntry(Page, res, { id: req.params.id });
     // if (!pages) return;

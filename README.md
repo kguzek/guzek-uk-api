@@ -21,7 +21,8 @@ Permissions: `public`
 Returns an array of pages to be displayed in the website navbar.
 
 Parameters:
-- `lang` (required): `EN` or `PL` -- the language of the page titles.
+
+- `lang` (required): `EN` or `PL` -- the language of the page titles. Can also be provided in cookies instead.
 
 ### GET `/pages/{pageId}`
 
