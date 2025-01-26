@@ -14,15 +14,20 @@ export const router = express.Router();
 
 const logger = getLogger(__filename);
 
-enum CONTENT_LANGUAGES {
-  EN = "contentEn",
-  PL = "contentPl",
-}
+const CONTENT_LANGUAGES = {
+  EN: "contentEn",
+  PL: "contentPl",
+} as const;
 
-enum TITLE_LANGUAGES {
-  EN = "titleEn",
-  PL = "titlePl",
-}
+const TITLE_LANGUAGES = {
+  EN: "titleEn",
+  PL: "titlePl",
+} as const;
+
+const LABEL_LANGUAGES = {
+  EN: "labelEn",
+  PL: "labelPl",
+};
 
 const send404 = (req: Request, res: Response) =>
   void sendError(res, 404, {
@@ -83,14 +88,23 @@ async function modifyPageContent(
     }
   }
 
-  const localiseTitleProperty = () => {
+  const localisePageAttributes = () => {
     attributes[TITLE_LANGUAGES[lang]] = attributes.title;
+    attributes[LABEL_LANGUAGES[lang]] = attributes.label;
     delete attributes.title;
+    delete attributes.label;
   };
 
   if (updateExistingPage) {
-    localiseTitleProperty();
-    await updateDatabaseEntry(Page, req, res, attributes);
+    localisePageAttributes();
+    await updateDatabaseEntry(
+      Page,
+      req,
+      res,
+      attributes,
+      req.params,
+      "/admin/content-manager"
+    );
   } else {
     if (attributes.shouldFetch && !content) {
       return sendError(res, 400, {
@@ -98,8 +112,15 @@ async function modifyPageContent(
       });
     }
     attributes.titleEN = attributes.titlePL = "";
-    localiseTitleProperty();
-    await createDatabaseEntry(Page, req, res, attributes);
+    localisePageAttributes();
+    await createDatabaseEntry(
+      Page,
+      attributes,
+      res,
+      undefined,
+      req,
+      "/admin/content-manager"
+    );
   }
 }
 
