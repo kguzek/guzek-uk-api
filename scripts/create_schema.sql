@@ -1,8 +1,8 @@
 CREATE DATABASE guzek_uk CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 CREATE TABLE `guzek_uk`.`pages` (
   `id` INT NOT NULL AUTO_INCREMENT,
-  `title_en` VARCHAR(45) NOT NULL,
-  `title_pl` VARCHAR(45) NOT NULL,
+  `title_en` VARCHAR(100) NOT NULL,
+  `title_pl` VARCHAR(100) NOT NULL,
   `url` VARCHAR(45) NOT NULL,
   `local_url` BOOLEAN NOT NULL,
   `admin_only` BOOLEAN NOT NULL,
