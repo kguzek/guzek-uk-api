@@ -3,6 +3,8 @@ CREATE TABLE `guzek_uk`.`pages` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `title_en` VARCHAR(100) NOT NULL,
   `title_pl` VARCHAR(100) NOT NULL,
+  `label_en` VARCHAR(45) NOT NULL,
+  `label_pl` VARCHAR(45) NOT NULL,
   `url` VARCHAR(45) NOT NULL,
   `local_url` BOOLEAN NOT NULL,
   `admin_only` BOOLEAN NOT NULL,
