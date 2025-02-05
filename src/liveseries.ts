@@ -1,25 +1,27 @@
 import express from "express";
 import { Op } from "sequelize";
 import { CronJob } from "cron";
-import axios, { AxiosResponse } from "axios";
+import axios from "axios";
 import { getLogger } from "guzek-uk-common/lib/logger";
 import {
   User,
   UserShows,
   WatchedEpisodes,
 } from "guzek-uk-common/lib/sequelize";
-import type { Episode, TvShow, UserObj } from "guzek-uk-common/models";
+import type { Episode, TvShow } from "guzek-uk-common/models";
 import { serialiseEpisode } from "guzek-uk-common/lib/util";
+import { CronUser } from "./cron-user";
 
 export const router = express.Router();
 
-const REFRESH_TOKEN_URL = "https://auth.guzek.uk/auth/refresh";
 const EPISODATE_API_BASE = "https://episodate.com/api/show-details?q=";
 
 const logger = getLogger(__filename);
 
 const hasEpisodeAired = (episode: Episode) =>
   new Date() > new Date(episode.air_date + " Z");
+
+let cronUser: CronUser;
 
 /**
  * Obtains the requesting user's liked and subscribed shows from the database.
@@ -34,54 +36,15 @@ export async function getUserShows(userUuid?: string) {
   };
 }
 
-interface RefreshTokenResponse {
-  accessToken: string;
-  expiresAt: number;
-  user: UserObj;
-}
-
-async function getCronUserInfo() {
-  const refreshToken = process.env.CRON_USER_REFRESH_TOKEN;
-  if (!refreshToken) {
-    logger.error("No CRON user refresh token environment variable set.");
-    return null;
-  }
-  let res: AxiosResponse<RefreshTokenResponse>;
-  try {
-    res = await axios.post<RefreshTokenResponse>(REFRESH_TOKEN_URL, {
-      token: refreshToken,
-    });
-  } catch (error) {
-    if (axios.isAxiosError(error)) {
-      logger.error(
-        `Could not obtain an access token for the CRON user. ${error.message}`,
-        error.response?.data
-      );
-      return null;
-    }
-    logger.error(
-      "An error occured while obtaining an access token for the CRON user:",
-      error
-    );
-    return null;
-  }
-  const expiresAt = new Date(res.data.expiresAt).toLocaleString();
-  logger.verbose(
-    `Obtained access token for CRON user with expiry date ${expiresAt}.`
-  );
-  return res.data;
-}
-
 async function checkUnwatchedEpisodes() {
-  const cronUser = await getCronUserInfo();
-  if (!cronUser) {
+  if (!cronUser.isReady()) {
     logger.error("Failed to get CRON user token. Aborting episodes check.");
     return;
   }
   const users = await User.findAll({
     where: {
       uuid: {
-        [Op.not]: cronUser.user.uuid,
+        [Op.not]: cronUser.getUuid(),
       },
       serverUrl: {
         [Op.and]: {
@@ -107,10 +70,24 @@ async function checkUnwatchedEpisodes() {
     const watchedShowData = watchedEpisodes.get("watchedEpisodes");
     const { subscribedShows } = await getUserShows(uuid);
     if (!subscribedShows) continue;
+    let userAccessToken: string | null = null;
+
+    async function getUserAccessToken() {
+      if (!userAccessToken) {
+        const res = await cronUser.getAccessToken(uuid);
+        if (res == null) {
+          logger.error("Failed to get user access token.");
+          return null;
+        }
+        userAccessToken = res.accessToken;
+      }
+      return userAccessToken;
+    }
+
     for (const showId of subscribedShows) {
       const watchedData = watchedShowData[showId];
       axios.get(EPISODATE_API_BASE + showId).then(
-        (res) => {
+        async (res) => {
           const tvShow = res.data.tvShow as TvShow;
           for (const episode of tvShow.episodes) {
             if (!hasEpisodeAired(episode)) continue;
@@ -121,8 +98,8 @@ async function checkUnwatchedEpisodes() {
             logger.info(
               `Attempting to download ${tvShow.name} ${serialised}...`
             );
-            axios
-              .post(
+            try {
+              await axios.post(
                 url,
                 {
                   showName: tvShow.name,
@@ -132,35 +109,34 @@ async function checkUnwatchedEpisodes() {
                 },
                 {
                   headers: {
-                    Authorization: `Bearer ${cronUser.accessToken}`,
+                    Authorization: `Bearer ${await getUserAccessToken()}`,
                   },
                 }
-              )
-              .then(() => {
-                logger.info(`Successfully posted to ${url}`);
-              })
-              .catch((error) => {
-                if (!axios.isAxiosError(error)) {
-                  logger.error(`Failed to post to ${url}:`, error);
-                  return;
-                }
-                if (error.status === 409) {
-                  logger.info(
-                    `This episode is already downloaded on the target server.`
-                  );
-                  return;
-                }
-                if (error.status === 403) {
-                  logger.warn(
-                    `The target server ${url} has denied access to the server.`
-                  );
-                  return;
-                }
-                logger.error(
-                  `Failed to post to ${url}. ${error.message}`,
-                  error.response?.data
+              );
+            } catch (error) {
+              if (!axios.isAxiosError(error)) {
+                logger.error(`Failed to post to ${url}:`, error);
+                return;
+              }
+              if (error.status === 409) {
+                logger.info(
+                  `This episode is already downloaded on the target server.`
                 );
-              });
+                return;
+              }
+              if (error.status === 403) {
+                logger.warn(
+                  `The target server ${url} has denied access to the server.`
+                );
+                return;
+              }
+              logger.error(
+                `Failed to post to ${url}. ${error.message}`,
+                error.response?.data
+              );
+              return;
+            }
+            logger.info(`Successfully posted to ${url}`);
           }
         },
         (error) => {
@@ -181,7 +157,12 @@ async function checkUnwatchedEpisodes() {
   }
 }
 
-export function initialiseEpisodeTracker() {
+export async function initialiseEpisodeTracker() {
+  cronUser = new CronUser();
+  if (!cronUser.isReady()) {
+    logger.error("Failed to initialise CRON user. Aborting episode tracker.");
+    return;
+  }
   checkUnwatchedEpisodes();
   new CronJob(
     "0 0 */6 * * *",
