@@ -75,10 +75,7 @@ async function checkUnwatchedEpisodes() {
     async function getUserAccessToken() {
       if (!userAccessToken) {
         const res = await cronUser.getAccessToken(uuid);
-        if (res == null) {
-          logger.error("Failed to get user access token.");
-          return null;
-        }
+        if (res == null) return null;
         userAccessToken = res.accessToken;
       }
       return userAccessToken;
@@ -93,6 +90,8 @@ async function checkUnwatchedEpisodes() {
             if (!hasEpisodeAired(episode)) continue;
             if (watchedData?.[episode.season]?.includes(episode.episode))
               continue;
+            const accessToken = await getUserAccessToken();
+            if (accessToken == null) return;
             const url = `${serverUrl}liveseries/downloaded-episodes`;
             const serialised = serialiseEpisode(episode);
             logger.info(
@@ -109,7 +108,7 @@ async function checkUnwatchedEpisodes() {
                 },
                 {
                   headers: {
-                    Authorization: `Bearer ${await getUserAccessToken()}`,
+                    Authorization: `Bearer ${accessToken}`,
                   },
                 }
               );
