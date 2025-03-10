@@ -1,5 +1,9 @@
 # The Guzek UK API
 
+## DEPRECATION NOTICE 2024-03-10
+
+Guzek UK API was made obsolete with the [integration of PayloadCMS](https://github.com/kguzek/guzek-uk-website/pull/18) into the Guzek UK website. This repository no longer serves any use.
+
 ## Intro
 
 This repository contains the source code for the [Guzek UK API](https://api.guzek.uk/), which is used to power the [Guzek UK Website](https://www.guzek.uk/) -- my personal homepage. It has general website-related routes, such as page content for my custom-made content management system, the entire backend of [LiveSeries](https://www.guzek.uk/liveseries), a public torrent indexer and scraper, and much more.
@@ -97,3 +101,15 @@ Tu Lałem is a currently-private dormant project, which may or may not be revisi
 ## Usage
 
 This repository isn't really meant to be cloned or downloaded by anyone, it's just where I keep the source code so I can develop from different locations. If you read this README, say hi!
+
+## Copyright
+
+Copyright © 2021-2025 by Konrad Guzek
+
+This file is part of Guzek UK API.
+
+Guzek UK API is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+
+Guzek UK API is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
